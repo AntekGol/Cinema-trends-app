@@ -1,0 +1,75 @@
+{% extends "trends/base.html" %}
+{% load trend_filters %}
+
+{% block title %}Monthly Report{% endblock %}
+
+{% block content %}
+<div class="page-content animate-fade-in">
+    <h1 class="page-title"> Monthly Report <span class="date-badge">{{ selected_month|date:'F Y' }}</span></h1>
+
+    <!-- Charts -->
+    <section class="charts-grid">
+        <div class="chart-container glass-card">
+            <h3 class="chart-title">Genre Popularity</h3>
+            <div id="monthly-genre-chart" class="chart-area"></div>
+        </div>
+        <div class="chart-container glass-card">
+            <h3 class="chart-title">Budget vs Revenue ($M)</h3>
+            <div id="budget-scatter-chart" class="chart-area"></div>
+        </div>
+    </section>
+
+    <!-- Genre Table -->
+    <section class="section">
+        <h2 class="section-title">Genre Statistics</h2>
+        <div class="table-wrapper glass-card">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Genre</th>
+                        <th>Trending Films</th>
+                        <th>Avg Popularity</th>
+                        <th>Avg Rating</th>
+                        <th>Total Budget</th>
+                        <th>Total Revenue</th>
+                        <th>Avg ROI</th>
+                        <th>Top Movie</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in genre_stats %}
+                    <tr>
+                        <td><span class="genre-tag">{{ s.genre.name }}</span></td>
+                        <td>{{ s.trending_count }}</td>
+                        <td>{{ s.avg_popularity|floatformat:0 }}</td>
+                        <td>⭐ {{ s.avg_vote_average|floatformat:1 }}</td>
+                        <td>{{ s.total_budget|format_currency }}</td>
+                        <td>{{ s.total_revenue|format_currency }}</td>
+                        <td class="{% if s.avg_roi and s.avg_roi > 0 %}trend-up{% elif s.avg_roi and s.avg_roi < 0 %}trend-down{% endif %}">
+                            {% if s.avg_roi %}{{ s.avg_roi|floatformat:0 }}%{% else %}N/A{% endif %}
+                        </td>
+                        <td>{% if s.top_movie %}<a href="{% url 'trends:movie_detail' s.top_movie.pk %}">{{ s.top_movie.title|truncatechars:25 }}</a>{% else %}-{% endif %}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const genreData = {{ genre_chart_data|safe }};
+        if (genreData.genres && genreData.genres.length > 0) {
+            initGenreHeatmap('monthly-genre-chart', genreData);
+        }
+
+        const scatterData = {{ scatter_chart_data|safe }};
+        if (scatterData.titles && scatterData.titles.length > 0) {
+            initBudgetRevenueScatter('budget-scatter-chart', scatterData);
+        }
+    });
+</script>
+{% endblock %}

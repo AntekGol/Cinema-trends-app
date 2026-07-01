@@ -1,0 +1,41 @@
+{% extends "trends/base.html" %}
+{% load trend_filters %}
+
+{% block title %}Daily Trends{% endblock %}
+
+{% block content %}
+<div class="page-content animate-fade-in">
+    <h1 class="page-title"> Daily Trends <span class="date-badge">{{ selected_date }}</span></h1>
+
+    <!-- Filters -->
+    <div class="filter-bar glass-card">
+        <div class="filter-group">
+            <label>Date</label>
+            <select hx-get="{% url 'trends:daily' %}" hx-target="#trend-results" hx-swap="innerHTML" hx-include="[name='media_type']" name="date" class="filter-select">
+                {% for d in available_dates %}
+                <option value="{{ d|date:'Y-m-d' }}" {% if d == selected_date %}selected{% endif %}>{{ d|date:'M d, Y' }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Type</label>
+            <div class="filter-tabs">
+                <button class="filter-tab {% if media_type == 'all' %}active{% endif %}"
+                    hx-get="{% url 'trends:daily' %}?date={{ selected_date|date:'Y-m-d' }}&media_type=all"
+                    hx-target="#trend-results" hx-swap="innerHTML" name="media_type" value="all">All</button>
+                <button class="filter-tab {% if media_type == 'movie' %}active{% endif %}"
+                    hx-get="{% url 'trends:daily' %}?date={{ selected_date|date:'Y-m-d' }}&media_type=movie"
+                    hx-target="#trend-results" hx-swap="innerHTML" name="media_type" value="movie">Movies</button>
+                <button class="filter-tab {% if media_type == 'tv' %}active{% endif %}"
+                    hx-get="{% url 'trends:daily' %}?date={{ selected_date|date:'Y-m-d' }}&media_type=tv"
+                    hx-target="#trend-results" hx-swap="innerHTML" name="media_type" value="tv">TV Shows</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results -->
+    <div id="trend-results">
+        {% include "trends/partials/_trend_table.html" %}
+    </div>
+</div>
+{% endblock %}

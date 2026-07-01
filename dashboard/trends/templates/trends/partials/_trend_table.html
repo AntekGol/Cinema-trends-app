@@ -1,0 +1,29 @@
+{% load trend_filters %}
+<div class="trending-grid">
+    {% for trend in trends %}
+    <a href="{% url 'trends:movie_detail' trend.movie.pk %}" class="movie-card glass-card animate-slide-up" style="animation-delay: {{ forloop.counter0 }}00ms">
+        <div class="movie-card-poster">
+            {% if trend.movie.poster_url %}
+            <img src="{{ trend.movie.poster_url }}" alt="{{ trend.movie.title }}" loading="lazy">
+            {% else %}
+            <div class="poster-placeholder"></div>
+            {% endif %}
+            <span class="position-badge">#{{ trend.position }}</span>
+            <span class="media-badge">{{ trend.media_type }}</span>
+        </div>
+        <div class="movie-card-info">
+            <h4 class="movie-card-title">{{ trend.movie.title }}</h4>
+            <div class="movie-card-meta">
+                <span class="rating">⭐ {{ trend.vote_average|floatformat:1 }}</span>
+                <span class="popularity"> {{ trend.popularity|floatformat:0 }}</span>
+                <span class="{{ trend.position_change|trend_color }}">
+                    {{ trend.position_change|trend_arrow }}
+                    {% if trend.position_change != 0 %}{{ trend.position_change|abs }}{% endif %}
+                </span>
+            </div>
+        </div>
+    </a>
+    {% empty %}
+    <p class="empty-state">No trends found for this date and filter combination.</p>
+    {% endfor %}
+</div>

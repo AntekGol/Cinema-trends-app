@@ -1,0 +1,52 @@
+{% load static trend_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CineTrends - Movie & TV trend analytics dashboard powered by TMDB data">
+    <title>{% block title %}CineTrends{% endblock %} | Movie Trends Dashboard</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-2.35.0.min.js" charset="utf-8"></script>
+
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'trends/css/style.css' %}">
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h1 class="sidebar-logo"> <span class="gradient-text">Cine</span>Trends</h1>
+        </div>
+        <ul class="nav-links">
+            <li><a href="{% url 'trends:dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"><span class="nav-icon"></span> Dashboard</a></li>
+            <li><a href="{% url 'trends:daily' %}" class="nav-link {% if request.resolver_match.url_name == 'daily' %}active{% endif %}"><span class="nav-icon"></span> Daily Trends</a></li>
+            <li><a href="{% url 'trends:weekly' %}" class="nav-link {% if request.resolver_match.url_name == 'weekly' %}active{% endif %}"><span class="nav-icon"></span> Weekly Analysis</a></li>
+            <li><a href="{% url 'trends:monthly' %}" class="nav-link {% if request.resolver_match.url_name == 'monthly' %}active{% endif %}"><span class="nav-icon"></span> Monthly Report</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <p>Powered by TMDB API</p>
+            <p class="version">v1.0 - Portfolio Project</p>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <button class="mobile-nav-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- JS -->
+    <script src="{% static 'trends/js/charts.js' %}"></script>
+    <script src="{% static 'trends/js/htmx-handlers.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

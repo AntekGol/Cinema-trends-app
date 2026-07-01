@@ -1,0 +1,80 @@
+{% extends "trends/base.html" %}
+{% load trend_filters %}
+
+{% block title %}Weekly Analysis{% endblock %}
+
+{% block content %}
+<div class="page-content animate-fade-in">
+    <h1 class="page-title"> Weekly Analysis <span class="date-badge">Week of {{ selected_week }}</span></h1>
+
+    <!-- Summary Cards -->
+    <div class="kpi-grid">
+        {% if top_risers.0 %}
+        <div class="kpi-card glass-card" style="--accent: #10b981">
+            <div class="kpi-icon"></div>
+            <div class="kpi-value">{{ top_risers.0.movie.title|truncatechars:20 }}</div>
+            <div class="kpi-label">Biggest Riser (+{{ top_risers.0.popularity_change_pct|floatformat:0 }}%)</div>
+        </div>
+        {% endif %}
+        {% if top_fallers.0 %}
+        <div class="kpi-card glass-card" style="--accent: #ef4444">
+            <div class="kpi-icon"></div>
+            <div class="kpi-value">{{ top_fallers.0.movie.title|truncatechars:20 }}</div>
+            <div class="kpi-label">Biggest Faller ({{ top_fallers.0.popularity_change_pct|floatformat:0 }}%)</div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Charts -->
+    <section class="charts-grid">
+        <div class="chart-container glass-card full-width">
+            <h3 class="chart-title">Top 10 Movies - Average Position</h3>
+            <div id="position-chart" class="chart-area"></div>
+        </div>
+    </section>
+
+    <!-- Summary Table -->
+    <section class="section">
+        <h2 class="section-title">Weekly Summary</h2>
+        <div class="table-wrapper glass-card">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Movie</th>
+                        <th>Days Trending</th>
+                        <th>Avg Position</th>
+                        <th>Best</th>
+                        <th>Avg Popularity</th>
+                        <th>Change</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in summaries %}
+                    <tr>
+                        <td><a href="{% url 'trends:movie_detail' s.movie.pk %}">{{ s.movie.title }}</a></td>
+                        <td>{{ s.days_trending }}</td>
+                        <td>#{{ s.avg_position|floatformat:1 }}</td>
+                        <td>#{{ s.best_position }}</td>
+                        <td>{{ s.avg_popularity|floatformat:0 }}</td>
+                        <td class="{% if s.popularity_change_pct > 0 %}trend-up{% elif s.popularity_change_pct < 0 %}trend-down{% endif %}">
+                            {% if s.popularity_change_pct > 0 %}+{% endif %}{{ s.popularity_change_pct|floatformat:1 }}%
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const data = {{ position_chart_data|safe }};
+        if (data.movies && data.movies.length > 0) {
+            initPositionChart('position-chart', data);
+        }
+    });
+</script>
+{% endblock %}

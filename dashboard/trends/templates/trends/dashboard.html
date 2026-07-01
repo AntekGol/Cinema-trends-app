@@ -1,0 +1,102 @@
+{% extends "trends/base.html" %}
+{% load trend_filters %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-content animate-fade-in">
+    <!-- Hero -->
+    <section class="hero">
+        <h1 class="hero-title"><span class="gradient-text-animated">CineTrends</span></h1>
+        <p class="hero-subtitle">Real-time movie & TV trend analytics</p>
+    </section>
+
+    <!-- KPI Cards -->
+    <section class="kpi-grid">
+        <div class="kpi-card glass-card" style="--accent: #7c3aed">
+            <div class="kpi-icon"></div>
+            <div class="kpi-value" data-count="{{ total_movies }}">{{ total_movies }}</div>
+            <div class="kpi-label">Movies Tracked</div>
+        </div>
+        <div class="kpi-card glass-card" style="--accent: #3b82f6">
+            <div class="kpi-icon">️</div>
+            <div class="kpi-value" data-count="{{ total_genres }}">{{ total_genres }}</div>
+            <div class="kpi-label">Genres</div>
+        </div>
+        <div class="kpi-card glass-card" style="--accent: #10b981">
+            <div class="kpi-icon"></div>
+            <div class="kpi-value" data-count="{{ trending_today }}">{{ trending_today }}</div>
+            <div class="kpi-label">Trending Today</div>
+        </div>
+        <div class="kpi-card glass-card" style="--accent: #f59e0b">
+            <div class="kpi-icon">⭐</div>
+            <div class="kpi-value">{{ avg_rating }}</div>
+            <div class="kpi-label">Avg Rating</div>
+        </div>
+    </section>
+
+    <!-- Charts Row -->
+    <section class="charts-grid">
+        <div class="chart-container glass-card">
+            <h3 class="chart-title">Genre Breakdown</h3>
+            <div id="genre-donut-chart" class="chart-area"></div>
+        </div>
+        <div class="chart-container glass-card">
+            <h3 class="chart-title">Popularity Timeline (Last 7 Days)</h3>
+            <div id="popularity-timeline-chart" class="chart-area"></div>
+        </div>
+    </section>
+
+    <!-- Top Trending -->
+    <section class="section">
+        <h2 class="section-title"> Top Trending Today</h2>
+        <div class="trending-grid">
+            {% for trend in top_trending %}
+            <a href="{% url 'trends:movie_detail' trend.movie.pk %}" class="movie-card glass-card">
+                <div class="movie-card-poster">
+                    {% if trend.movie.poster_url %}
+                    <img src="{{ trend.movie.poster_url }}" alt="{{ trend.movie.title }}" loading="lazy">
+                    {% else %}
+                    <div class="poster-placeholder"></div>
+                    {% endif %}
+                    <span class="position-badge">#{{ trend.position }}</span>
+                </div>
+                <div class="movie-card-info">
+                    <h4 class="movie-card-title">{{ trend.movie.title }}</h4>
+                    <div class="movie-card-meta">
+                        <span class="rating">⭐ {{ trend.vote_average|floatformat:1 }}</span>
+                        <span class="{{ trend.position_change|trend_color }}">
+                            {{ trend.position_change|trend_arrow }} {{ trend.position_change|abs }}
+                        </span>
+                    </div>
+                </div>
+            </a>
+            {% empty %}
+            <p class="empty-state">No trending data yet. Run the pipeline to start collecting data!</p>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Genre Donut
+        const genreData = {{ genre_chart_data|safe }};
+        if (genreData.labels && genreData.labels.length > 0) {
+            initGenreDonut('genre-donut-chart', genreData);
+        }
+
+        // Popularity Timeline
+        const timelineData = {{ timeline_chart_data|safe }};
+        if (timelineData.dates && timelineData.dates.length > 0) {
+            initPopularityTimeline('popularity-timeline-chart', timelineData);
+        }
+
+        // Counter animation
+        animateCounters();
+    });
+</script>
+{% endblock %}

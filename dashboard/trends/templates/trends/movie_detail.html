@@ -1,0 +1,101 @@
+{% extends "trends/base.html" %}
+{% load trend_filters %}
+
+{% block title %}{{ movie.title }}{% endblock %}
+
+{% block content %}
+<div class="page-content animate-fade-in">
+    <!-- Hero Banner -->
+    <div class="movie-hero" {% if movie.backdrop_url %}style="background-image: linear-gradient(to bottom, rgba(15,17,24,0.6), rgba(15,17,24,0.95)), url('{{ movie.backdrop_url }}')"{% endif %}>
+        <div class="movie-hero-content">
+            <div class="movie-hero-poster">
+                {% if movie.poster_url %}
+                <img src="{{ movie.poster_url }}" alt="{{ movie.title }}">
+                {% else %}
+                <div class="poster-placeholder large"></div>
+                {% endif %}
+            </div>
+            <div class="movie-hero-info">
+                <h1 class="movie-hero-title">{{ movie.title }}</h1>
+                <div class="movie-hero-meta">
+                    {% if movie.release_date %}<span> {{ movie.release_date|date:'Y' }}</span>{% endif %}
+                    {% if movie.runtime %}<span>⏱️ {{ movie.runtime }} min</span>{% endif %}
+                    <span> {{ movie.original_language|upper }}</span>
+                </div>
+                <div class="movie-hero-genres">
+                    {% for genre in genres %}
+                    <span class="genre-tag">{{ genre.name }}</span>
+                    {% endfor %}
+                </div>
+                <p class="movie-overview">{{ movie.overview }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <section class="kpi-grid">
+        <div class="kpi-card glass-card" style="--accent: #3b82f6">
+            <div class="kpi-icon"></div>
+            <div class="kpi-value">{{ movie.budget_display }}</div>
+            <div class="kpi-label">Budget</div>
+        </div>
+        <div class="kpi-card glass-card" style="--accent: #10b981">
+            <div class="kpi-icon">️</div>
+            <div class="kpi-value">{{ movie.revenue_display }}</div>
+            <div class="kpi-label">Revenue</div>
+        </div>
+        <div class="kpi-card glass-card" style="--accent: {% if movie.roi and movie.roi > 0 %}#10b981{% else %}#ef4444{% endif %}">
+            <div class="kpi-icon"></div>
+            <div class="kpi-value">{% if movie.roi %}{{ movie.roi|floatformat:0 }}%{% else %}N/A{% endif %}</div>
+            <div class="kpi-label">ROI</div>
+        </div>
+        <div class="kpi-card glass-card" style="--accent: #f59e0b">
+            <div class="kpi-icon">⭐</div>
+            <div class="kpi-value">{{ movie.daily_trends.last.vote_average|default:"-" }}</div>
+            <div class="kpi-label">Rating</div>
+        </div>
+    </section>
+
+    <!-- Popularity Chart -->
+    <section class="section">
+        <div class="chart-container glass-card full-width">
+            <h3 class="chart-title">Popularity Over Time</h3>
+            <div id="movie-timeline-chart" class="chart-area"></div>
+        </div>
+    </section>
+
+    <!-- Cast -->
+    {% if cast %}
+    <section class="section">
+        <h2 class="section-title"> Cast</h2>
+        <div class="cast-grid">
+            {% for member in cast %}
+            <a href="{% url 'trends:actor_profile' member.person.pk %}" class="cast-card glass-card">
+                {% if member.person.profile_url %}
+                <img src="{{ member.person.profile_url }}" alt="{{ member.person.name }}" class="cast-photo" loading="lazy">
+                {% else %}
+                <div class="cast-photo-placeholder"></div>
+                {% endif %}
+                <div class="cast-name">{{ member.person.name }}</div>
+                <div class="cast-character">{{ member.character_name|truncatechars:25 }}</div>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const data = {{ timeline_data|safe }};
+        if (data.dates && data.dates.length > 0) {
+            initPopularityTimeline('movie-timeline-chart', {
+                dates: data.dates,
+                series: [{name: 'Popularity', values: data.popularity}]
+            });
+        }
+    });
+</script>
+{% endblock %}

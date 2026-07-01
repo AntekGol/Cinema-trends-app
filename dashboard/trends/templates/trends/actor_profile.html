@@ -1,0 +1,46 @@
+{% extends "trends/base.html" %}
+
+{% block title %}{{ actor.name }}{% endblock %}
+
+{% block content %}
+<div class="page-content animate-fade-in">
+    <div class="actor-hero glass-card">
+        <div class="actor-photo-wrapper">
+            {% if actor.profile_url %}
+            <img src="{{ actor.profile_url }}" alt="{{ actor.name }}" class="actor-photo">
+            {% else %}
+            <div class="actor-photo-placeholder"></div>
+            {% endif %}
+        </div>
+        <div class="actor-info">
+            <h1>{{ actor.name }}</h1>
+            <p class="actor-dept">{{ actor.known_for_department }}</p>
+            <p class="actor-popularity"> Popularity: {{ actor.popularity|floatformat:1 }}</p>
+        </div>
+    </div>
+
+    <section class="section">
+        <h2 class="section-title"> Filmography</h2>
+        <div class="trending-grid">
+            {% for role in filmography %}
+            <a href="{% url 'trends:movie_detail' role.movie.pk %}" class="movie-card glass-card">
+                <div class="movie-card-poster">
+                    {% if role.movie.poster_url %}
+                    <img src="{{ role.movie.poster_url }}" alt="{{ role.movie.title }}" loading="lazy">
+                    {% else %}
+                    <div class="poster-placeholder"></div>
+                    {% endif %}
+                </div>
+                <div class="movie-card-info">
+                    <h4 class="movie-card-title">{{ role.movie.title }}</h4>
+                    <p class="cast-character">as {{ role.character_name|truncatechars:30 }}</p>
+                    {% if role.movie.release_date %}
+                    <span class="movie-year">{{ role.movie.release_date|date:'Y' }}</span>
+                    {% endif %}
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}

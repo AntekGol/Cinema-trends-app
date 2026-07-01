@@ -1,0 +1,64 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+eggs/
+*.egg
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+
+# Environment Variables
+.env
+.env.local
+.env.production
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Django
+*.sqlite3
+db.sqlite3
+dashboard/staticfiles/
+dashboard/media/
+
+# Airflow
+airflow/logs/
+airflow/plugins/__pycache__/
+
+# Databricks
+databricks/.databricks/
+
+# Azure
+.azure/
+
+# Data files (don't commit raw data)
+data/
+*.csv
+*.parquet
+*.json
+!.env.example
+!docker-compose.yml
+
+# Test / Coverage
+.coverage
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+
+# Jupyter
+.ipynb_checkpoints/
