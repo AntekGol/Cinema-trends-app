@@ -8,10 +8,10 @@
     <h1 class="page-title"> Daily Trends <span class="date-badge">{{ selected_date }}</span></h1>
 
     <!-- Filters -->
-    <div class="filter-bar glass-card">
+    <form id="filter-form" class="filter-bar glass-card" hx-get="{% url 'trends:daily' %}" hx-target="#trend-results" hx-trigger="change">
         <div class="filter-group">
             <label>Date</label>
-            <select hx-get="{% url 'trends:daily' %}" hx-target="#trend-results" hx-swap="innerHTML" hx-include="[name='media_type']" name="date" class="filter-select">
+            <select name="date" class="filter-select">
                 {% for d in available_dates %}
                 <option value="{{ d|date:'Y-m-d' }}" {% if d == selected_date %}selected{% endif %}>{{ d|date:'M d, Y' }}</option>
                 {% endfor %}
@@ -20,18 +20,17 @@
         <div class="filter-group">
             <label>Type</label>
             <div class="filter-tabs">
-                <button class="filter-tab {% if media_type == 'all' %}active{% endif %}"
-                    hx-get="{% url 'trends:daily' %}?date={{ selected_date|date:'Y-m-d' }}&media_type=all"
-                    hx-target="#trend-results" hx-swap="innerHTML" name="media_type" value="all">All</button>
-                <button class="filter-tab {% if media_type == 'movie' %}active{% endif %}"
-                    hx-get="{% url 'trends:daily' %}?date={{ selected_date|date:'Y-m-d' }}&media_type=movie"
-                    hx-target="#trend-results" hx-swap="innerHTML" name="media_type" value="movie">Movies</button>
-                <button class="filter-tab {% if media_type == 'tv' %}active{% endif %}"
-                    hx-get="{% url 'trends:daily' %}?date={{ selected_date|date:'Y-m-d' }}&media_type=tv"
-                    hx-target="#trend-results" hx-swap="innerHTML" name="media_type" value="tv">TV Shows</button>
+                <input type="radio" name="media_type" value="all" id="type-all" style="display:none;" {% if media_type == 'all' %}checked{% endif %}>
+                <label for="type-all" class="filter-tab {% if media_type == 'all' %}active{% endif %}" onclick="document.querySelectorAll('.filter-tab').forEach(l=>l.classList.remove('active')); this.classList.add('active');">All</label>
+
+                <input type="radio" name="media_type" value="movie" id="type-movie" style="display:none;" {% if media_type == 'movie' %}checked{% endif %}>
+                <label for="type-movie" class="filter-tab {% if media_type == 'movie' %}active{% endif %}" onclick="document.querySelectorAll('.filter-tab').forEach(l=>l.classList.remove('active')); this.classList.add('active');">Movies</label>
+
+                <input type="radio" name="media_type" value="tv" id="type-tv" style="display:none;" {% if media_type == 'tv' %}checked{% endif %}>
+                <label for="type-tv" class="filter-tab {% if media_type == 'tv' %}active{% endif %}" onclick="document.querySelectorAll('.filter-tab').forEach(l=>l.classList.remove('active')); this.classList.add('active');">TV Shows</label>
             </div>
         </div>
-    </div>
+    </form>
 
     <!-- Results -->
     <div id="trend-results">
