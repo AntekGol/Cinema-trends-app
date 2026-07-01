@@ -50,7 +50,7 @@ function initGenreDonut(elementId, data) {
     const layout = {
         ...DARK_THEME,
         showlegend: false,
-        margin: { l: 20, r: 20, t: 20, b: 20 },
+        margin: { l: 20, r: 20, t: 20, b: 50 },
         annotations: [{
             text: 'Genres',
             font: { size: 16, color: '#e2e8f0', family: 'Inter' },
