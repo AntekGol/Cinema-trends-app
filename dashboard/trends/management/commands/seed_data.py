@@ -44,6 +44,8 @@ MOVIES = [
     {"id": 533535, "title": "Deadpool & Wolverine", "budget": 200000000, "revenue": 1338073645, "release_date": "2024-07-24", "runtime": 128, "lang": "en", "poster": "/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg", "backdrop": "/yDHYTfA3R0jFYba16jBB1ef8oIt.jpg", "genres": [28, 35, 878]},
     {"id": 1184918, "title": "The Wild Robot", "budget": 78000000, "revenue": 325000000, "release_date": "2024-09-12", "runtime": 102, "lang": "en", "poster": "/wTnV3PCVW5O92JMrFvvrRcV39RU.jpg", "backdrop": "/4zlOPT9CrtIzs0f3IKrHGjK58dh.jpg", "genres": [16, 878, 10751]},
     {"id": 912649, "title": "Venom: The Last Dance", "budget": 120000000, "revenue": 478000000, "release_date": "2024-10-22", "runtime": 109, "lang": "en", "poster": "/aosm8NMQ3UyoBVpSxyimorCQykC.jpg", "backdrop": "/3V4kLQg0kSqPLctI5ziYWabAZYF.jpg", "genres": [28, 878, 12]},
+    {"id": 1399, "title": "Game of Thrones", "budget": 0, "revenue": 0, "release_date": "2011-04-17", "runtime": 60, "lang": "en", "poster": "/1XS1oqL89opfnbLl8WnZY1O1uJx.jpg", "backdrop": "/suopoADq0k8YZr4dQXcU6pToj6s.jpg", "genres": [10765, 18, 10759], "media_type": "tv"},
+    {"id": 1396, "title": "Breaking Bad", "budget": 0, "revenue": 0, "release_date": "2008-01-20", "runtime": 45, "lang": "en", "poster": "/3xnWaLQjelJDDF7LT1WBo6f4BRe.jpg", "backdrop": "/900tHlUYUkp7Ol04XFSoGzBeVyV.jpg", "genres": [18, 80], "media_type": "tv"},
     {"id": 698687, "title": "Transformers One", "budget": 75000000, "revenue": 172000000, "release_date": "2024-09-11", "runtime": 104, "lang": "en", "poster": "/iRCgqpdVE4wyLQvGYU3ZP7pAtUc.jpg", "backdrop": "/x9JnGFwXluJsA85IgPCJzl8URcm.jpg", "genres": [16, 28, 878]},
     {"id": 545611, "title": "Everything Everywhere All at Once", "budget": 25000000, "revenue": 141000000, "release_date": "2022-03-11", "runtime": 139, "lang": "en", "poster": "/w3LxiVYdWWRvEVdn5RYq6jIqkb1.jpg", "backdrop": "/fOy2Jurz9k6RnJnMUMRDAgBwru2.jpg", "genres": [28, 12, 878]},
     {"id": 603692, "title": "John Wick: Chapter 4", "budget": 100000000, "revenue": 440157033, "release_date": "2023-03-22", "runtime": 169, "lang": "en", "poster": "/vZloFAK7NmvMGKE7VkF5UHaz0I.jpg", "backdrop": "/7I6VUdPj6tQECNHdviJkUHD2u89.jpg", "genres": [28, 53, 80]},
@@ -156,7 +158,7 @@ class Command(BaseCommand):
                 prev_pos = pos + random.randint(-3, 3)
                 DailyTrend.objects.create(
                     movie_id=m["id"],
-                    media_type="movie",
+                    media_type=m.get("media_type", "movie"),
                     date=trend_date,
                     position=pos,
                     position_change=prev_pos - pos,
@@ -176,7 +178,7 @@ class Command(BaseCommand):
             for m in random.sample(MOVIES, 15):
                 WeeklySummary.objects.create(
                     movie_id=m["id"],
-                    media_type="movie",
+                    media_type=m.get("media_type", "movie"),
                     week_start=week_start,
                     days_trending=random.randint(1, 7),
                     avg_position=round(random.uniform(1, 20), 1),
@@ -193,8 +195,13 @@ class Command(BaseCommand):
         for month_offset in range(2):
             month = today.replace(day=1) - timedelta(days=30 * month_offset)
             month = month.replace(day=1)
-            for gid, gname in random.sample(GENRES, 12):
-                top_movie = random.choice(MOVIES)
+            existing_gids = list(set(g for m in MOVIES for g in m.get("genres", [])))
+            for gid in random.sample(existing_gids, min(12, len(existing_gids))):
+                top_movie = random.choice([m for m in MOVIES if gid in m.get("genres", [])])
+                total_budget = random.randint(200, 2000) * 1000000
+                total_revenue = random.randint(100, 5000) * 1000000
+                avg_roi = round((total_revenue - total_budget) / total_budget * 100, 1)
+
                 MonthlyGenreStat.objects.create(
                     month=month,
                     genre_id=gid,
@@ -202,9 +209,9 @@ class Command(BaseCommand):
                     avg_popularity=round(random.uniform(50, 150), 1),
                     avg_vote_average=round(random.uniform(6.0, 8.5), 1),
                     top_movie_id=top_movie["id"],
-                    total_budget=random.randint(200, 2000) * 1000000,
-                    total_revenue=random.randint(400, 5000) * 1000000,
-                    avg_roi=round(random.uniform(-20, 300), 1),
+                    total_budget=total_budget,
+                    total_revenue=total_revenue,
+                    avg_roi=avg_roi,
                 )
                 monthly_count += 1
         self.stdout.write(f"   {monthly_count} monthly genre stats")

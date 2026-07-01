@@ -11,14 +11,12 @@
     <div class="kpi-grid">
         {% if top_risers.0 %}
         <div class="kpi-card glass-card" style="--accent: #10b981">
-            <div class="kpi-icon"></div>
             <div class="kpi-value">{{ top_risers.0.movie.title|truncatechars:20 }}</div>
             <div class="kpi-label">Biggest Riser (+{{ top_risers.0.popularity_change_pct|floatformat:0 }}%)</div>
         </div>
         {% endif %}
         {% if top_fallers.0 %}
         <div class="kpi-card glass-card" style="--accent: #ef4444">
-            <div class="kpi-icon"></div>
             <div class="kpi-value">{{ top_fallers.0.movie.title|truncatechars:20 }}</div>
             <div class="kpi-label">Biggest Faller ({{ top_fallers.0.popularity_change_pct|floatformat:0 }}%)</div>
         </div>
@@ -45,7 +43,7 @@
                         <th>Avg Position</th>
                         <th>Best</th>
                         <th>Avg Popularity</th>
-                        <th>Change</th>
+                        <th>Change <span style="font-size:0.75rem; color:#64748b; font-weight:normal;">(vs prev. week)</span></th>
                     </tr>
                 </thead>
                 <tbody>
