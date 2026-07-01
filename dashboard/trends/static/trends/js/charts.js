@@ -134,10 +134,11 @@ function initBudgetRevenueScatter(elementId, data) {
     };
 
     // Break-even line
-    const maxVal = Math.max(...data.budgets, ...data.revenues);
+    const maxBudget = Math.max(...data.budgets);
+    const maxRevenue = Math.max(...data.revenues);
     const breakEven = {
-        x: [0, maxVal],
-        y: [0, maxVal],
+        x: [0, maxBudget],
+        y: [0, maxBudget],
         mode: 'lines',
         type: 'scatter',
         line: { color: 'rgba(148,163,184,0.3)', width: 1, dash: 'dash' },

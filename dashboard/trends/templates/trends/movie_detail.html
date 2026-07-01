@@ -35,22 +35,18 @@
     <!-- Stats Cards -->
     <section class="kpi-grid">
         <div class="kpi-card glass-card" style="--accent: #3b82f6">
-            <div class="kpi-icon"></div>
             <div class="kpi-value">{{ movie.budget_display }}</div>
             <div class="kpi-label">Budget</div>
         </div>
         <div class="kpi-card glass-card" style="--accent: #10b981">
-            <div class="kpi-icon">️</div>
             <div class="kpi-value">{{ movie.revenue_display }}</div>
             <div class="kpi-label">Revenue</div>
         </div>
         <div class="kpi-card glass-card" style="--accent: {% if movie.roi and movie.roi > 0 %}#10b981{% else %}#ef4444{% endif %}">
-            <div class="kpi-icon"></div>
             <div class="kpi-value">{% if movie.roi %}{{ movie.roi|floatformat:0 }}%{% else %}N/A{% endif %}</div>
             <div class="kpi-label">ROI</div>
         </div>
         <div class="kpi-card glass-card" style="--accent: #f59e0b">
-            <div class="kpi-icon">⭐</div>
             <div class="kpi-value">{{ movie.daily_trends.last.vote_average|default:"-" }}</div>
             <div class="kpi-label">Rating</div>
         </div>

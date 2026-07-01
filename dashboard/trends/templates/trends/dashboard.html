@@ -14,22 +14,18 @@
     <!-- KPI Cards -->
     <section class="kpi-grid">
         <div class="kpi-card glass-card" style="--accent: #7c3aed">
-            <div class="kpi-icon"></div>
             <div class="kpi-value" data-count="{{ total_movies }}">{{ total_movies }}</div>
             <div class="kpi-label">Movies Tracked</div>
         </div>
         <div class="kpi-card glass-card" style="--accent: #3b82f6">
-            <div class="kpi-icon">️</div>
             <div class="kpi-value" data-count="{{ total_genres }}">{{ total_genres }}</div>
             <div class="kpi-label">Genres</div>
         </div>
         <div class="kpi-card glass-card" style="--accent: #10b981">
-            <div class="kpi-icon"></div>
             <div class="kpi-value" data-count="{{ trending_today }}">{{ trending_today }}</div>
             <div class="kpi-label">Trending Today</div>
         </div>
         <div class="kpi-card glass-card" style="--accent: #f59e0b">
-            <div class="kpi-icon">⭐</div>
             <div class="kpi-value">{{ avg_rating }}</div>
             <div class="kpi-label">Avg Rating</div>
         </div>
@@ -42,7 +38,7 @@
             <div id="genre-donut-chart" class="chart-area"></div>
         </div>
         <div class="chart-container glass-card">
-            <h3 class="chart-title">Popularity Timeline (Last 7 Days)</h3>
+            <h3 class="chart-title">Popularity Timeline <span style="font-size:0.75rem; color:#64748b; font-weight:normal;">(TMDB engagement score based on views & votes)</span></h3>
             <div id="popularity-timeline-chart" class="chart-area"></div>
         </div>
     </section>
