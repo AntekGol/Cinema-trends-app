@@ -6,14 +6,16 @@ Built with: **PySpark** · **Apache Airflow** · **Databricks** · **Django** ·
 
 ## Live Demo
 
-**[View the Live Dashboard on Render.com](https://cinetrends-pipeline.onrender.com)**
-*(Note: As this is hosted on a free tier, it may take ~50 seconds to wake up on the first load).*
+**[View the Dashboard on Render.com](https://cinetrends-pipeline.onrender.com)**
+
+> **Note for Reviewers:** This live demo is a static snapshot populated with sample data to provide immediate, hassle-free access to the UI and analytics features. 
+> The full, end-to-end functionality—where Apache Airflow automatically fetches daily updates from the TMDB API, processes the data, and loads it into the database—is designed to be run locally via Docker.
 
 ## Project Overview
 
-CineTrends is a complete data pipeline that:
+CineTrends is a comprehensive data engineering portfolio project that demonstrates a complete ETL lifecycle:
 
-1. **Extracts** trending movies, TV shows, and people from the [TMDB API](https://developer.themoviedb.org/) daily
+1. **Extracts** trending movies, TV shows, and people from the [TMDB API](https://developer.themoviedb.org/) daily.
 2. **Loads** raw data to Azure Blob Storage (data lake, Medallion Architecture)
 3. **Transforms** data using PySpark/Pandas with window functions, aggregations, and data quality checks
 4. **Orchestrates** the workflow with Apache Airflow (3 DAGs: daily, weekly, monthly)
