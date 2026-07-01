@@ -4,6 +4,11 @@
 
 Built with: **PySpark** · **Apache Airflow** · **Databricks** · **Django** · **Pandas** · **Azure Blob Storage** · **PostgreSQL**
 
+## Live Demo
+
+**[View the Live Dashboard on Render.com](https://cinetrends-pipeline.onrender.com)**
+*(Note: As this is hosted on a free tier, it may take ~50 seconds to wake up on the first load).*
+
 ## Project Overview
 
 CineTrends is a complete data pipeline that:
@@ -96,7 +101,9 @@ cinetrends-pipeline/
 └── .env.example                  # Environment template
 ```
 
-## Quick Start
+## Local Development Setup
+
+You can run the dashboard locally in minutes using the provided sample data—no API keys required.
 
 ### 1. Clone & Setup
 
@@ -117,7 +124,9 @@ cp .env.example .env
 # Edit .env with your API keys
 ```
 
-### 2. Get TMDB API Key
+### 2. Get TMDB API Key (Optional)
+
+*Note: You only need this if you want to run the Airflow ETL pipeline to fetch fresh data. To just view the dashboard with sample data, skip to Step 3.*
 
 1. Sign up at [themoviedb.org](https://www.themoviedb.org/signup)
 2. Go to Settings → API → Create API Key
@@ -129,7 +138,7 @@ cp .env.example .env
 # Migrate database (SQLite by default)
 make django-migrate
 
-# Seed with sample data
+# Seed the database with realistic sample data (No API key needed!)
 make seed
 
 # Start server
