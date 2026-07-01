@@ -26,6 +26,7 @@ GENRES = [
     (14, "Fantasy"), (36, "History"), (27, "Horror"), (10402, "Music"),
     (9648, "Mystery"), (10749, "Romance"), (878, "Science Fiction"),
     (10770, "TV Movie"), (53, "Thriller"), (10752, "War"), (37, "Western"),
+    (10759, "Action & Adventure"), (10765, "Sci-Fi & Fantasy"),
 ]
 
 # Real movie data with actual TMDB poster paths
